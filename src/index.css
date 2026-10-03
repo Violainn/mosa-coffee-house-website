@@ -1,0 +1,278 @@
+@import "tailwindcss";
+
+/* =====================================================================
+   MOSA COFFEE HOUSE — Design Tokens (Vintage / Retro Warm)
+   ---------------------------------------------------------------------
+   Semua warna, font, bayangan, dan animasi didefinisikan sebagai CSS
+   Variables di sini. Ubah nilai di bawah untuk menyesuaikan palet —
+   utilitas Tailwind (bg-cream, text-espresso, dll.) ikut berubah.
+   ===================================================================== */
+@theme {
+  /* --- Palet warna utama --- */
+  --color-cream: #f7f3e9; /* Background dasar: warm cream / parchment   */
+  --color-parchment: #efe6d3; /* Variasi kertas tua, sedikit lebih gelap  */
+  --color-sand: #e3d6b9; /* Garis, pemisah, latar chip                 */
+  --color-tan: #c9b48d; /* Detail tepi, ornamen                        */
+  --color-espresso: #3d2314; /* Teks & elemen utama: coffee brown         */
+  --color-mocha: #5c3b28; /* Teks sekunder                              */
+  --color-sage: #6b7a63; /* Aksen 1: muted olive / sage green          */
+  --color-sage-light: #a9b39e;
+  --color-rust: #c05a46; /* Aksen 2: terracotta rust (tombol/highlight) */
+  --color-rust-dark: #a2483a;
+  --color-gold: #b8923d; /* Aksen kecil bergaya emas tua                */
+
+  /* --- Tipografi --- */
+  --font-display: "Playfair Display", Georgia, "Times New Roman", serif;
+  --font-body: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-accent: "Lora", Georgia, "Times New Roman", serif;
+
+  /* --- Bayangan retro (hard offset) --- */
+  --shadow-retro: 6px 6px 0 0 var(--color-espresso);
+  --shadow-retro-sm: 3px 3px 0 0 var(--color-espresso);
+  --shadow-retro-rust: 6px 6px 0 0 var(--color-rust);
+  --shadow-retro-cream: 6px 6px 0 0 var(--color-cream);
+
+  /* --- Animasi --- */
+  --animate-spin-slow: spin 28s linear infinite;
+  --animate-marquee: marquee 45s linear infinite;
+  --animate-fade-up: fade-up 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-pulse-dot: pulse-dot 2s ease-in-out infinite;
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes pulse-dot {
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 color-mix(in srgb, currentColor 55%, transparent);
+    }
+    70% {
+      box-shadow: 0 0 0 8px transparent;
+    }
+  }
+}
+
+/* =====================================================================
+   Base
+   ===================================================================== */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5.5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-cream font-body text-espresso antialiased;
+    font-feature-settings: "kern", "liga";
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Tekstur kertas halus (film grain) di atas seluruh halaman */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0.16;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 220px 220px;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  input,
+  select,
+  textarea,
+  button {
+    font: inherit;
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--color-rust) 28%, transparent);
+    color: var(--color-espresso);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-rust);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* =====================================================================
+   Komponen bergaya vintage
+   ===================================================================== */
+@layer components {
+  /* Lebar konten */
+  .container-x {
+    @apply mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-12;
+  }
+
+  /* Label kecil di atas judul, dengan garis di kiri-kanan */
+  .eyebrow {
+    @apply inline-flex items-center gap-3 font-body text-[0.7rem] font-semibold uppercase tracking-[0.3em] text-rust;
+  }
+  .eyebrow::before,
+  .eyebrow::after {
+    content: "";
+    @apply h-px w-7 bg-current opacity-70;
+  }
+  .eyebrow-left::after {
+    content: none;
+  }
+
+  /* Bingkai klasik ganda: border + outline berjarak */
+  .frame-double {
+    border: 1px solid color-mix(in srgb, var(--color-espresso) 45%, transparent);
+    outline: 1px solid color-mix(in srgb, var(--color-espresso) 45%, transparent);
+    outline-offset: 4px;
+  }
+  .frame-double-light {
+    border: 1px solid color-mix(in srgb, var(--color-cream) 45%, transparent);
+    outline: 1px solid color-mix(in srgb, var(--color-cream) 45%, transparent);
+    outline-offset: 4px;
+  }
+
+  /* Titik-titik penghubung nama & harga pada menu */
+  .leader {
+    flex: 1 1 auto;
+    min-width: 1rem;
+    margin: 0 0.5rem;
+    border-bottom: 2px dotted color-mix(in srgb, var(--color-espresso) 32%, transparent);
+    transform: translateY(-0.3em);
+  }
+
+  /* Tepi bergerigi ala perangko / tiket */
+  .scallop-top {
+    --s: 22px;
+    height: calc(var(--s) * 0.6);
+    background-image: radial-gradient(
+      circle at 50% 0,
+      transparent calc(var(--s) * 0.4),
+      var(--color-cream) calc(var(--s) * 0.4 + 1px)
+    );
+    background-size: var(--s) calc(var(--s) * 0.6);
+    background-repeat: repeat-x;
+  }
+  .scallop-bottom {
+    --s: 22px;
+    height: calc(var(--s) * 0.6);
+    background-image: radial-gradient(
+      circle at 50% 100%,
+      transparent calc(var(--s) * 0.4),
+      var(--color-espresso) calc(var(--s) * 0.4 + 1px)
+    );
+    background-size: var(--s) calc(var(--s) * 0.6);
+    background-repeat: repeat-x;
+  }
+
+  /* Pola garis diagonal halus untuk latar section */
+  .bg-stripes {
+    background-image: repeating-linear-gradient(
+      -45deg,
+      color-mix(in srgb, var(--color-espresso) 5%, transparent) 0 1px,
+      transparent 1px 12px
+    );
+  }
+
+  /* Pola titik halus */
+  .bg-dots {
+    background-image: radial-gradient(
+      color-mix(in srgb, var(--color-espresso) 12%, transparent) 1px,
+      transparent 1px
+    );
+    background-size: 18px 18px;
+  }
+
+  /* Pita berjalan */
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    @apply animate-marquee;
+  }
+  .marquee:hover .marquee-track {
+    animation-play-state: paused;
+  }
+
+  /* Input formulir bergaya kertas */
+  .input-retro {
+    @apply w-full rounded-sm border border-espresso/40 bg-white/40 px-3.5 py-2.5 text-espresso placeholder:text-espresso/40 transition duration-200 focus:border-rust focus:bg-white/70 focus:outline-none focus:ring-2 focus:ring-rust/25;
+    min-height: 2.85rem;
+  }
+  /* Input tanggal & waktu: seluruh area bisa diklik untuk membuka picker,
+     indikator bawaan browser disembunyikan agar ikon kustom yang tampil */
+  .input-retro[type="date"],
+  .input-retro[type="time"] {
+    position: relative;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .input-retro[type="date"]::-webkit-calendar-picker-indicator,
+  .input-retro[type="time"]::-webkit-calendar-picker-indicator {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .input-retro[type="date"]::-webkit-date-and-time-value,
+  .input-retro[type="time"]::-webkit-date-and-time-value {
+    text-align: left;
+    min-height: 1.5em;
+  }
+
+  /* Sembunyikan scrollbar (tab menu) */
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Cap / stempel bergaya retro */
+  .stamp {
+    @apply inline-block rounded-sm border-[3px] px-3 py-1 font-display text-lg font-bold uppercase tracking-[0.2em];
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1.6 -0.15'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1.6 -0.15'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  }
+}
